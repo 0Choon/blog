@@ -1,0 +1,105 @@
+# ─────────────────────────────────────────────────────────────
+# 재건축 사업성분석 입력 파일
+# 예시: [사업성분석#21] 목동 13단지 (블로그 글 수치 그대로)
+#
+# 새 단지 분석: 이 파일을 복사해 이름만 바꾼 뒤(예: sanggye5.toml) 숫자를 고치고
+#   python analysis/feasibility.py analysis/complexes/sanggye5.toml
+#
+# 금액 단위는 모두 '천원' (블로그 수지표와 동일), 면적은 ㎡, 단가는 천원/평
+# ─────────────────────────────────────────────────────────────
+
+[info]
+series_no   = 21                              # 사업성분석 #번호
+name        = "목동 13단지"
+address     = "서울특별시 양천구 목동동로 100"
+completion  = "1987. 7. 30."
+age         = 40                              # 년차
+households  = 2280
+far         = 159                             # 현재 용적률(%)
+size_range  = "21 ~ 58평형(공급평형)"
+site_area_m2 = 162139.7                       # 대지면적
+owners      = 2353                            # 토지등소유자 수
+owners_note = "정비몽땅 게시 기준"
+notice      = "서울특별시고시 제2025-122호"    # 정비구역 지정 고시
+plan_far    = "획지1 - 299.94%, 획지2 - 299.98%"
+construction_months = 48
+
+# ── 기본 가정 (정비구역 결정고시 추정치) ──────────────────────
+[base]
+general_price           = 55000    # 일반분양가 (천원/평) = 5,500만원
+member_price_ratio      = 0.863636 # 조합원분양가 = 일반분양가 × 비율 (4,750 / 5,500)
+construction_per_pyeong = 8740     # 평당공사비 (천원/평) = 874만원
+gfa_pyeong              = 242003.92  # 공사 연면적(평). 모르면 '공사비 ÷ 평당공사비'로 역산
+appraisal_ratio         = 1.0      # 종전자산 감정평가액 = 추정시세 × 비율
+public_amount           = 68178100 # 공공주택 매각대금 (직접 입력)
+# public_amount 대신 아래 두 값을 넣으면 '공급면적(평) × 기본형건축비 × 비율'로 계산
+# public_basic_cost = 7690         # 기본형건축비 (천원/평)
+# public_ratio      = 0.8
+
+# ── 종전자산: 기존 타입별 현황 ───────────────────────────────
+# price = 세대당 추정시세(천원). lump = true 이면 price를 '합계 금액'으로 봄(상가 등)
+[existing]
+types = [
+  { type = "21평",  exclusive_m2 = 53.90,  supply_m2 = 72.37,  units = 240, land_pyeong = 12.2, price = 1150000 },
+  { type = "27B평", exclusive_m2 = 70.73,  supply_m2 = 92.43,  units = 780, land_pyeong = 16.0, price = 1490000 },
+  { type = "31평",  exclusive_m2 = 84.41,  supply_m2 = 105.24, units = 24,  land_pyeong = 19.1, price = 1660000 },
+  { type = "37B평", exclusive_m2 = 99.26,  supply_m2 = 123.76, units = 96,  land_pyeong = 22.5, price = 1850000 },
+  { type = "38A평", exclusive_m2 = 98.63,  supply_m2 = 128.89, units = 600, land_pyeong = 22.4, price = 1850000 },
+  { type = "39평",  exclusive_m2 = 103.97, supply_m2 = 131.14, units = 14,  land_pyeong = 23.6, price = 1880000 },
+  { type = "45C평", exclusive_m2 = 122.30, supply_m2 = 149.47, units = 196, land_pyeong = 27.7, price = 2050000 },
+  { type = "46B평", exclusive_m2 = 122.30, supply_m2 = 152.49, units = 16,  land_pyeong = 27.7, price = 2050000 },
+  { type = "46평",  exclusive_m2 = 124.55, supply_m2 = 155.30, units = 64,  land_pyeong = 28.2, price = 2050000 },
+  { type = "56C평", exclusive_m2 = 151.76, supply_m2 = 185.48, units = 210, land_pyeong = 34.4, price = 2420000 },
+  { type = "57B평", exclusive_m2 = 154.37, supply_m2 = 191.15, units = 8,   land_pyeong = 35.0, price = 2420000 },
+  { type = "58A평", exclusive_m2 = 156.62, supply_m2 = 193.93, units = 32,  land_pyeong = 35.5, price = 2420000 },
+  { type = "상가 등", land_pyeong = 902.0, price = 83131000, lump = true },
+]
+
+# ── 신축 계획: 타입별 세대 배분 ──────────────────────────────
+# member/general/public/donation = 조합원/일반분양/공공주택/기부채납 세대수
+# coef = 평형별 분양가 차등계수 (소형일수록 평당가가 높으면 1보다 크게)
+[new]
+types = [
+  { type = "59T",  exclusive_m2 = 59.99,  supply_m2 = 82.18,  land_pyeong = 8.1,  general = 365, public = 444, donation = 45, coef = 1.06 },
+  { type = "74T",  exclusive_m2 = 74.20,  supply_m2 = 100.27, land_pyeong = 10.1, general = 297, public = 43,  donation = 22, coef = 1.06 },
+  { type = "84T",  exclusive_m2 = 84.99,  supply_m2 = 114.08, land_pyeong = 11.5, member = 1118, general = 342, donation = 14 },
+  { type = "101T", exclusive_m2 = 101.90, supply_m2 = 134.08, land_pyeong = 13.8, member = 410 },
+  { type = "108T", exclusive_m2 = 108.90, supply_m2 = 143.67, land_pyeong = 14.8, member = 172 },
+  { type = "132T", exclusive_m2 = 132.00, supply_m2 = 173.68, land_pyeong = 17.9, member = 306 },
+  { type = "162T", exclusive_m2 = 162.00, supply_m2 = 210.39, land_pyeong = 22.0, member = 262 },
+  { type = "182T", exclusive_m2 = 182.00, supply_m2 = 233.33, land_pyeong = 24.7, member = 12 },
+]
+
+# ── 기타 수입 (천원) ─────────────────────────────────────────
+[revenue]
+commercial      = 150627100   # 상가분양 (상가조합원 + 일반)
+commercial_note = "상가조합원 768.8억원 + 일반분양 737.4억원"
+vat             = -1474906    # 매출부가세
+
+# ── 공사비 외 사업비 (천원) ──────────────────────────────────
+# elasticity = 공사비가 1% 오를 때 이 항목이 몇 % 오르는지 (0 = 고정)
+[cost]
+items = [
+  { name = "설계+감리+관리",      amount = 58949580 },
+  { name = "수수료 및 기타사업비", amount = 118344263 },
+  { name = "각종 부(분)담금",      amount = 20561160 },
+  { name = "금융비",              amount = 41049700,  elasticity = 0.81 },
+  { name = "법인세",              amount = 1100000 },
+  { name = "기타경비",            amount = 8012000,   elasticity = 0.243 },
+  { name = "예비비",              amount = 105755710, elasticity = 0.243 },
+]
+
+# ── 변경 시나리오 (기본 가정 대비 바뀌는 값만 적기) ────────────
+[[scenario]]
+title = "삼성물산(래미안 모브13) 선정에 따른 사업성 변화"
+construction_per_pyeong = 9819.3   # 공사비 2조 3,763억원 ÷ 연면적
+general_price           = 58000    # 목동 파크자이 84T 실거래 평단가 참고
+member_price_ratio      = 0.8535   # 조합원 평균 4,950만원/평 (블로그: 4,980만원 평형별 차등)
+public_amount           = 73014839 # 기본형건축비 80% 반영
+
+# ── 민감도: 평당공사비 × 일반분양가 (천원/평) ─────────────────
+[sensitivity]
+construction_per_pyeong = [8740, 9200, 9820, 10300, 10800]
+general_price           = [55000, 58000, 60000, 62000, 65000]
+reference_existing      = "27B평"   # 분담금 민감도 기준 (종전 타입 → 신축 타입)
+reference_new           = "84T"
